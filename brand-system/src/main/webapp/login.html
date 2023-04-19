@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>login</title>
+  <link href="css/login.css" rel="stylesheet">
+  <script src="js/vue.js"></script>
+  <script src="js/axios-0.18.0.js"></script>
+</head>
+
+<body>
+<div id="app">
+  <div id="loginDiv" style="height: 350px">
+    <form action="" id="form">
+      <h1 id="loginMsg">手机商城后台管理系统</h1>
+      <div id="errorMsg">{{ message }}</div>
+      <p>账号:<input id="username" v-model="username" type="text"></p>
+
+      <p>密码:<input id="password" v-model="password" type="password"></p>
+      <p>记住我:<input id="remember" v-model="remember" type="checkbox"></p>
+      <div id="subDiv">
+        <input type="button" class="button" value="登录" @click="submit">
+        <input type="reset" class="button" value="重置">&nbsp;&nbsp;&nbsp;
+        <a href="register.html">没有账号？</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script>
+  new Vue({
+    el: "#app",
+    data: {
+      username:'',
+      password:'',
+      remember:'',
+      message:'',
+    },
+    mounted(){
+      console.log(location.search)
+      //console.log(document.cookie);
+      let strCookie = document.cookie;
+      let arrCookie = strCookie.split(";");
+      for (let i = 0; i < arrCookie.length; i++) {
+        let arr = arrCookie[i].split("=");
+        //console.log(arr)
+        if(arr[0]==='username'){
+          this.username = arr[1];
+        }else if(arr[0].trim()==='password'){
+          this.password = arr[1]
+        }
+      }
+
+/*      this.username = document.cookie.username;
+      this.password = document.cookie.password;*/
+    },
+    methods:{
+      submit(){
+        axios.get("http://localhost:8080/brand-system/loginServlet?username=" + this.username + "&password=" + this.password  + "&remember=" + this.remember).then((res)=>{
+          console.log(res)
+          if(res.data==="success"){
+            //location.href = 'http://localhost:8080/brand-system/brand.html'
+            location.href = 'http://localhost:8080/brand-system/brand.html?'+new Date().getMilliseconds()
+          }else {
+            console.log(12345)
+            this.message = "账号或密码错误"
+          }
+        })
+      }
+    }
+  })
+</script>
+</body>
+</html>
